@@ -1,9 +1,9 @@
 package semver
 
 import (
+	"fmt"
 	"bytes"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -42,6 +42,9 @@ func NewVersion(version string) (*Version, error) {
 	parsed := make([]int64, 3, 3)
 
 	for i, v := range dotParts[:3] {
+		if len(v) > 1 && v[0] == '0' {
+			return nil, errors.New(fmt.Sprintf("invalid leading zero in version number: %s", version))
+		}
 		val, err := strconv.ParseInt(v, 10, 64)
 		parsed[i] = val
 		if err != nil {
